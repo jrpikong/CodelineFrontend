@@ -4,6 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+import VueResource from 'vue-resource'
+Vue.use(VueResource)
+
+/*
+setting global end point API
+*/
+Vue.http.options.root = 'http://localhost/codeline/CodelineFrontend/'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
