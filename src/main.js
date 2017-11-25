@@ -10,7 +10,7 @@ Vue.use(VueResource)
 /*
 setting global end point API
 */
-Vue.http.options.root = 'http://localhost/codeline/CodelineFrontend/'
+Vue.http.options.root = 'http://codelineapi.dev/'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

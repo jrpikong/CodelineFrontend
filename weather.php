@@ -1,11 +1,12 @@
 <?php
+ header("Access-Control-Allow-Origin: *");
 /**
  * This script mirrors metaweather API.
  * It offers two commands:
  *
  * command: search
  * uri: weather.php?command=search&keyword={your_keyword}
- * 
+ *
  * command: location
  * uri: weather.php?command=location&woeid={target_woeid}
  */
@@ -41,11 +42,11 @@ function quitWithJsonResponse($output, $code = 200) {
 function mirrorToEndpoint($uri) {
 	global $baseUrl;
 	$response = @file_get_contents($baseUrl . $uri);
-	
+
 	if ( $response ) {
-		return quitWithResponse($response);	
-	}	
-	
+		return quitWithResponse($response);
+	}
+
 	quitWithJsonResponse(['error' => 'Not found'], 404);
 }
 
