@@ -5,7 +5,10 @@ import App from './App'
 import router from './router'
 
 import VueResource from 'vue-resource'
+import VueMoment from 'vue-moment'
+
 Vue.use(VueResource)
+Vue.use(VueMoment)
 
 /*
 setting global end point API
@@ -15,8 +18,7 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
   router,
-  template: '<App/>',
-  components: { App }
+  el: '#app',
+  render: h => h(App)
 })

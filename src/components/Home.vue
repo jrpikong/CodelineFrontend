@@ -11,7 +11,6 @@
       <div class="col-md-4 pt-3" v-for="city in cities" :key="city">
         <weather :message="city"></weather>
       </div>
-      <div v-if="val==true">Data Not Found</div>
     </div>
   </div>
 </template>
@@ -24,15 +23,10 @@ export default {
   data () {
     return {
       search: '',
-      val: '',
       cities: ['Istanbul', 'Berlin', 'London', 'Helsinki', 'Dublin', 'Vancouver']
     }
   },
   methods: {
-    setNotFound: function (val) {
-      this.val = true
-      console.log(val)
-    },
     callChild: function () {
       this.cities = []
       this.cities.push(this.search)

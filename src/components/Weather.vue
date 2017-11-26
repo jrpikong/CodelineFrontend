@@ -21,6 +21,7 @@
           </ul>
         </div>
       </div>
+      <div v-if="notFound">No results were found. Try changing the keyword!</div>
   </div>
 </template>
 
@@ -30,6 +31,7 @@
     data () {
       return {
         loading: true,
+        notFound: false,
         weaters: [],
         urlIcon: urlIcon(),
         cityName: this.message
@@ -43,7 +45,7 @@
             .then((response) => {
               if (response.body.length === 0) {
                 this.loading = false
-                this.$parent.$options.methods.setNotFound(true)
+                this.notFound = true
               } else {
                 let woeids = response.body[0].woeid
                 this.$http.get('weather.php/?command=location&woeid=' + woeids, getHeaders())
