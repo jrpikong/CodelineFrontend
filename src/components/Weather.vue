@@ -1,26 +1,26 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-md-4">
-        <div v-if="loading">Loading ...</div>
-        <div v-else="" v-for="berlin_ in berlin" class="card">
-          <div class="card-header"> <h4>
-            <router-link :to="'/weather/' + berlin_.woeid">{{berlin_.city}}</router-link>
-          </h4></div>
-          <div class="card-block">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                <img :src="urlIcon+ berlin_.weather_state_abbr+'.svg'" alt="Showers" style="width:32px" />
-                <span>{{berlin_.weather_state_name}}</span>
-              </li>
-              <li class="list-group-item">Temp : {{berlin_.the_temp}}°C</li>
-              <li class="list-group-item">Max : {{berlin_.max_temp}}°C</li>
-              <li class="list-group-item">Min : {{berlin_.min_temp}}°C</li>
-            </ul>
+      <div v-if="loading"> Loading ...</div>
+      <div v-else="" v-for="weater in weaters" class="card">
+        <router-link :to="'/weather/' + weater.woeid" tag="a">
+          <div class="card-header">
+            <h4>
+              {{weater.city}}
+            </h4>
           </div>
+        </router-link>
+        <div class="card-block">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <img :src="urlIcon+ weater.weather_state_abbr+'.svg'" alt="Showers" style="width:32px" />
+              <span>{{weater.weather_state_name}}</span>
+            </li>
+            <li class="list-group-item">Temp : {{weater.the_temp}}°C</li>
+            <li class="list-group-item">Max : {{weater.max_temp}}°C</li>
+            <li class="list-group-item">Min : {{weater.min_temp}}°C</li>
+          </ul>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -30,35 +30,42 @@
     data () {
       return {
         loading: true,
-        berlin: [],
-        urlIcon: urlIcon()
+        weaters: [],
+        urlIcon: urlIcon(),
+        cityName: this.message
       }
     },
+    props: ['message'],
     methods: {
-      getWeaterBerlin: function () {
+      getWeater: function () {
         setTimeout(() => {
-          this.$http.get('weather.php/?command=search&keyword=Berlin', getHeaders())
+          this.$http.get('weather.php/?command=search&keyword=' + this.cityName, getHeaders())
             .then((response) => {
-              let woeids = response.body[0].woeid
-              this.$http.get('weather.php/?command=location&woeid=' + woeids, getHeaders())
-                .then((response) => {
-                  this.loading = false
-                  this.berlin.push({
-                    city: response.body.title,
-                    woeid: response.body.woeid,
-                    the_temp: Math.round(response.body.consolidated_weather[0].the_temp),
-                    min_temp: Math.round(response.body.consolidated_weather[0].min_temp),
-                    max_temp: Math.round(response.body.consolidated_weather[0].max_temp),
-                    weather_state_name: response.body.consolidated_weather[0].weather_state_name,
-                    weather_state_abbr: response.body.consolidated_weather[0].weather_state_abbr
+              if (response.body.length === 0) {
+                this.loading = false
+                this.$parent.$options.methods.setNotFound(true)
+              } else {
+                let woeids = response.body[0].woeid
+                this.$http.get('weather.php/?command=location&woeid=' + woeids, getHeaders())
+                  .then((response) => {
+                    this.loading = false
+                    this.weaters.push({
+                      city: response.body.title,
+                      woeid: response.body.woeid,
+                      the_temp: Math.round(response.body.consolidated_weather[0].the_temp),
+                      min_temp: Math.round(response.body.consolidated_weather[0].min_temp),
+                      max_temp: Math.round(response.body.consolidated_weather[0].max_temp),
+                      weather_state_name: response.body.consolidated_weather[0].weather_state_name,
+                      weather_state_abbr: response.body.consolidated_weather[0].weather_state_abbr
+                    })
                   })
-                })
+              }
             })
         })
       }
     },
-    created () {
-      this.getWeaterBerlin()
+    mounted () {
+      this.getWeater()
     }
   }
 </script>
